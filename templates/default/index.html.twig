@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block body %}
+
+    <div class="col-8 offset-2 mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="float-start pt-1"><i class="fa-solid fa-list"></i>&nbsp;&nbsp;Página de inicio</h6>
+            </div>
+            <div class="card-body">
+
+                <a class="btn btn-dark" href="{{ path('app_libro_index') }}"><i class="fa-solid fa-book"></i>&nbsp;CRUD de libros</a>
+
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

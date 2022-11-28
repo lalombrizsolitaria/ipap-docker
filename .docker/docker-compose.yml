@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+    # DEFINO CONTENEDOR DE BASE DE DATOS MYSQL
+    db:
+        # IMAGEN OFICIAL DE MYSQL
+        image: mysql:8.0.23
+        # OPCIONALMENTE DEFINO LA PLATAFORMA
+        platform: linux/x86_64
+        # DEFINO hostname PARA IDENTIFICAR EL CONTENEDOR DE LA BASE DE DATOS CON ESE NOMBRE
+        hostname: db
+        # COMANDO PARA EVITAR PROBLEMAS DE LOGEO EN MYSQL
+        command: --default-authentication-plugin=mysql_native_password
+        # VOLUMEN PERSISTENTE DONDE GUARDARA LA INFORMACION DE LA BD (ruta anfitrion: ruta en contenedor)
+        volumes:
+            - "../db:/var/lib/mysql"
+        # PUEDO PARAMETRIZAR LA IMAGEN SETEANDO LOS VALORES POR DEFECTO QUE TENGO DEFINIDOS EN .env
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        # MAPEO DE PUERTOS INTERNOS 3306 DEL CONTENEDOR CON 3306 DEL ANFITRION
+        ports:
+            - 3306:3306
+        # ENLAZO CONTENEDORES EN RED VIRTUAL "symfony"
+        networks:
+            - symfony
+    # CONTENEDOR OPCIONAL DE PHPMYADMIN PARA ACCEDER A LA BD... localhost:8081
+    phpmyadmin:
+        # IMAGEN OFICIAL DE PHPMYADMIN
+        image: phpmyadmin
+        # OPCIONAL, INDICA QUE SE REINICIE EN CASO DE NO ARRANCAR
+        restart: always
+        # MAPEO DE PUERTOS INTERNOS 80 DEL CONTENEDOR AL 8081 DEL ANFITRION (ACCEDO POR localhost:8081)
+        ports:
+            - 8081:80
+        # ENLAZO CONTENEDORES EN RED VIRTUAL "symfony"
+        networks:
+            - symfony
+    # CONTENEDOR DE PHP (LEVANTA ./php/Dockerfile)
+    php:
+        build:
+            # INDICAO DONDE BUSCO EL DOCKERFILE
+            context: ./php
+            args:
+                # SETEO EL TIMEZONE PARA PHP
+                TIMEZONE: ${TIMEZONE}
+        # VOLUMEN PERSISTENTE DONDE SE ENCUENTRA EL CODIGO FUENTE (Symfony) : WWW EN CONTENEDOR
+        volumes:
+            - ../:/var/www/symfony/
+        # ENLAZO CONTENEDORES EN RED VIRTUAL "symfony"
+        networks:
+            - symfony
+    # CONTENEDOR DE NGINX ALPINE (PUEDE SER APACHE TAMBIEN) (LEVANTA ./nginx/Dockerfile)
+    nginx:
+        build:
+            # INDICAO DONDE BUSCO EL DOCKERFILE
+            context: ./nginx
+        # VOLUMEN PERSISTENTE DONDE SE ENCUENTRA EL CODIGO FUENTE (Symfony) : WWW EN CONTENEDOR
+        volumes:
+            - ../:/var/www/symfony/
+        # MAPEO DE PUERTOS INTERNOS 80 DEL CONTENEDOR AL 80 DEL ANFITRION (ACCEDO POR localhost)
+        ports:
+            - 80:80
+        # ENLAZO CONTENEDORES EN RED VIRTUAL "symfony"
+        networks:
+            - symfony
+        # SE UTILIZAR ESE ARCHIVO PARA DEFINIFIR EL VIRTUAL HOST PARA LA APP
+        environment:
+            NGINX_BACKEND_DOMAIN: ipap.test
+
+# SE DEFINEN LOS VOLUMENES PERSISTENTES USADOS
+volumes:
+    php:
+    db:
+
+# SE DEFINEN LAS REDES VIRTUALES
+networks:
+    symfony:

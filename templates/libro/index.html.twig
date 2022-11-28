@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de libros{% endblock %}
+
+{% block body %}
+
+    <div class="col-8 offset-2 mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="float-start pt-1 float-start"><i class="fa-solid fa-list"></i>&nbsp;&nbsp;Listado de libros</h6>
+                <a class="btn btn-dark btn-sm float-end" href="{{ path('app_index') }}"><i class="fa-solid fa-home"></i>&nbsp;Inicio</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Titulo</th>
+                        <th>Autor</th>
+                        <th>Descripción</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for libro in libros %}
+                    <tr>
+                        <td>{{ libro.id }}</td>
+                        <td>{{ libro.titulo }}</td>
+                        <td>{{ libro.autor }}</td>
+                        <td>{{ libro.descripcion }}</td>
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Acciones
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ path('app_libro_show', {'id': libro.id}) }}"><i class="fa-solid fa-eye"></i>&nbsp;Ver</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_libro_edit', {'id': libro.id}) }}"><i class="fa-solid fa-edit"></i>&nbsp;Modificar</a></li>
+                                    <li><a class="dropdown-item text-danger" href="{{ path('app_libro_delete', {'id': libro.id}) }}"><i class="fa-solid fa-times"></i>&nbsp;&nbsp;Eliminar</a></li>
+                                </ul>
+                            </div>
+
+                           
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-danger"><i class="fa-solid fa-times"></i>&nbsp;&nbsp;No hay libros</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <a class="btn btn-danger float-start" href="{{ path('app_libro_new') }}"><i class="fa-solid fa-plus"></i>&nbsp;Agregar libro</a>
+            
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

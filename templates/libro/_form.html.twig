@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="row">
+        <div class="col-12">
+        <a class="btn btn-danger float-start" href="{{ path('app_libro_index') }}"><i class="fa-solid fa-list"></i>&nbsp;&nbsp;Volver al listado</a>
+            <button class="btn btn-save btn-success float-end"><i class="fa-solid fa-save"></i>&nbsp;&nbsp;Guardar</button>
+        </div>
+    </div>
+{{ form_end(form) }}

@@ -10,7 +10,7 @@
 - Dockerfile para Nginx (/.docker/nginx) y archivos de configuración.
 - Archivo .env (/.docker) donde se establecen parámetros generales de nombre del proyecto, timezone de PHP y conexión a la BD.
 
-###Pasos a seguir
+### Pasos a seguir
 
 Descargar el proyecto desde GitHub. Se generará un directorio "ipap-docker".
 
